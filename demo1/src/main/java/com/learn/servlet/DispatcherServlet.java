@@ -1,12 +1,14 @@
 package com.learn.servlet;
 
-import com.learn.adapter.HandlerAdapter;
-import com.learn.adapter.HttpServletHandlerAdapter;
-import com.learn.adapter.SimpleControllerHandlerAdapter;
-import com.learn.mapping.BeanNameUrlHandlerMapping;
-import com.learn.mapping.HandlerMapping;
-import com.learn.mapping.SimpleUrlHandlerMapping;
 
+import com.learn.adapter.HandlerAdapter;
+import com.learn.mapping.HandlerMapping;
+import com.learn.spring.factory.support.DefaultListableBeanFactory;
+import com.learn.spring.reader.XmlBeanDefinitionReader;
+import com.learn.spring.resource.ClasspathResource;
+import com.learn.spring.resource.Resource;
+
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,59 +17,67 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @version 1.0
- * @ClassName DispatcherServlet
- * @Description todo
- * @Author wangdi
- * @Date 2021/4/14 0:13
- **/
-
+ * 只需要搞一个Servlet用来分发所有请求
+ * 前端控制器
+ */
 public class DispatcherServlet extends AbstractServlet{
 
-    // 存放所有adapter
     private List<HandlerAdapter> handlerAdapters = new ArrayList<>();
 
-    // request - handler映射
     private List<HandlerMapping> handlerMappings = new ArrayList<>();
 
+    private DefaultListableBeanFactory beanFactory;
+
+    private static final String CONTEXT_CONFIG_LOCATION = "contextConfigLocation";
     /**
-     * 功能描述 重写init方法把adapter 放入
-     * @author wangdi
-     * @date   2021/4/14 0:24
-     * @param
-     * @return void
+     * Servlet规范中的初始化方法
+     * @param config
+     * @throws ServletException
      */
     @Override
-    public void init() throws ServletException {
-        handlerAdapters.add(new HttpServletHandlerAdapter());
-        handlerAdapters.add(new SimpleControllerHandlerAdapter());
+    public void init(ServletConfig config) throws ServletException {
 
+        String location = config.getInitParameter(CONTEXT_CONFIG_LOCATION);
 
-        // mapping
-        handlerMappings.add(new BeanNameUrlHandlerMapping());
-        handlerMappings.add(new SimpleUrlHandlerMapping());
+        // 初始化spring容器
+        initSpringContainer(location);
 
+        // 初始化策略集合
+        initStrategies();
     }
 
     /**
-     * 功能描述
-     * 分发请求三步：
-     *
-     *  1、根据请求查找对应的【处理器】进行处理（处理器是什么？如何查找处理器？）
-     *
-     *
-     *  2、根据处理器查找对应的适配器
-     *
-     *
-     *  3.返回
-     *
-     *
-     * @author wangdi
-     * @date   2021/4/14 0:15
-     * @param req
-     * @param resp
-     * @return void
+     * 初始化策略集合
      */
+    private void initStrategies() {
+        initHandlerMappings();
+        initHandlerAdapters();
+    }
+
+    private void initHandlerAdapters() {
+        // 可以根据类型进行一次性初始化所有的子类型的实例
+        handlerAdapters = beanFactory.getBeansByType(HandlerAdapter.class);
+//        handlerAdapters.add(new HttpServletHandlerAdapter()) ;
+//        handlerAdapters.add(new SimpleControllerHandlerAdapter());
+    }
+
+    private void initHandlerMappings() {
+        handlerMappings = beanFactory.getBeansByType(HandlerMapping.class);
+
+//        handlerMappings.add(new BeanNameUrlHandlerMapping());
+//        handlerMappings.add(new SimpleUrlHandlerMapping());
+    }
+
+    private void initSpringContainer(String location) {
+        beanFactory = new DefaultListableBeanFactory();
+        XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
+        Resource resource = new ClasspathResource(location);
+        beanDefinitionReader.loadBeanDefinitions(resource);
+
+        // 针对容器内说有的单例bean，可以一次性进行对象创建
+
+    }
+
     @Override
     public void doDispatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
@@ -77,7 +87,7 @@ public class DispatcherServlet extends AbstractServlet{
                 return;
             }
 
-            // 2、根据处理器查找对应的适配器 -- handler 需要区分是返回数据还是modelAndVide所以需要区分
+            // 2、根据处理器查找对应的适配器
             // 适配器（DispatcherServlet-- 适配器 -->handler）
             // 适配器和处理器是一对一的
             HandlerAdapter ha = getHandlerAdapter(handler);
@@ -95,16 +105,25 @@ public class DispatcherServlet extends AbstractServlet{
         }catch (Exception e){
             e.printStackTrace();
         }
+
     }
 
+    // 暗号：詹哥会弹琴
 
-    /**
-     * 功能描述 通过request 获取handler
-     * @author wangdi
-     * @date   2021/4/14 0:26
-     * @param req
-     * @return java.lang.Object
-     */
+    private HandlerAdapter getHandlerAdapter(Object handler) {
+        // 这就是策略模式的玩法，替换掉很多if语句进行判断的方式
+        if (handlerAdapters != null){
+            for (HandlerAdapter ha : handlerAdapters) {
+                // 需要根据处理器类型去判断哪个适配器和它适配
+                if (ha.supports(handler)) {
+                    // 返回对应的适配器
+                    return ha;
+                }
+            }
+        }
+        return null;
+    }
+
     private Object getHandler(HttpServletRequest req) {
 
         //根据处理器和请求的映射关系进行查找（映射关系可能存储在xml配置文件的标签中，可能存储到map集合中）
@@ -133,30 +152,6 @@ public class DispatcherServlet extends AbstractServlet{
             }
         }
 
-        return null;
-    }
-
-
-
-
-    /**
-     * 功能描述 通过handler拿adapter 处理请求
-     * @author wangdi
-     * @date   2021/4/14 0:22
-     * @param handler
-     * @return com.learn.adapter.HandlerAdapter
-     */
-    private HandlerAdapter getHandlerAdapter(Object handler) {
-        // 这就是策略模式的玩法，替换掉很多if语句进行判断的方式
-        if (handlerAdapters != null){
-            for (HandlerAdapter ha : handlerAdapters) {
-                // 需要根据处理器类型去判断哪个适配器和它适配
-                if (ha.supports(handler)) {
-                    // 返回对应的适配器
-                    return ha;
-                }
-            }
-        }
         return null;
     }
 }

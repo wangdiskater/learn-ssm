@@ -12,6 +12,11 @@
     <servlet>
         <servlet-name>dispatcherServlet</servlet-name>
         <servlet-class>com.learn.servlet.DispatcherServlet</servlet-class>
+        <!--        动态配置spring配置文件路径-->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:springmvc.xml</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>dispatcherServlet</servlet-name>

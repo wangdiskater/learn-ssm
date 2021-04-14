@@ -1,0 +1,16 @@
+<beans>
+
+    <!-- 配置处理器映射器和处理器适配器 -->
+    <bean class="com.learn.adapter.HttpServletHandlerAdapter"></bean>
+    <bean class="com.learn.adapter.SimpleControllerHandlerAdapter"></bean>
+    <bean class="com.learn.adapter.RequestMappingHandlerAdapter"></bean>
+    <bean class="com.learn.mapping.BeanNameUrlHandlerMapping"></bean>
+    <bean class="com.learn.mapping.SimpleUrlHandlerMapping"></bean>
+    <bean class="com.learn.mapping.RequestMappingHandlerMapping"></bean>
+
+    <!-- 配置处理器 -->
+    <bean name="/queryUser" class="com.learn.handler.QueryUserHandler" />
+    <!-- 配置注解方式开发的处理器 -->
+    <bean class="com.learn.controller.UserController"/>
+
+</beans>

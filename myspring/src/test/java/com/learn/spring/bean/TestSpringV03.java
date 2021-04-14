@@ -46,14 +46,14 @@ public class TestSpringV03 {
     // 测试人员
     @Test
     public void test(){
-        Map<String,Object> map = new HashMap<>();
-        map.put("username","千年老亚瑟");
-
-        // 调用程序员A的代码
-        UserService userService = (UserService) beanFactory.getBean("userService");
-
-        List<User> users = userService.queryUsers(map);
-        System.out.println(users);
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("username","千年老亚瑟");
+//
+//        // 调用程序员A的代码
+//        UserService userService = (UserService) beanFactory.getBean("userService");
+//
+//        List<User> users = userService.queryUsers(map);
+//        System.out.println(users);
     }
 
 }

@@ -7,7 +7,10 @@
     <groupId>com.learn</groupId>
     <artifactId>mcv</artifactId>
     <version>1.0</version>
-    <packaging>war</packaging>
+    <modules>
+        <module>../myspring</module>
+    </modules>
+    <packaging>pom</packaging>
 
     <dependencies>
         <!-- servlet -->

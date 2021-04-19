@@ -1,0 +1,21 @@
+<configuration>
+	<!-- mybatis 数据源环境配置 -->
+	<environments default="dev">
+		<environment id="dev">
+			<!-- 配置数据源信息 -->
+			<dataSource type="DBCP">
+				<property name="db.driver" value="com.mysql.cj.jdbc.Driver"></property>
+				<property name="db.url"
+						  value="jdbc:mysql://localhost:3306/mytest1?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=Asia/Shanghai&amp;useColumnNamesInFindColumn=true"></property>
+				<property name="db.username" value="root"></property>
+				<property name="db.password" value="123456"></property>
+			</dataSource>
+		</environment>
+	</environments>
+
+	<!-- 映射文件加载 -->
+	<mappers>
+		<!-- resource指定映射文件的类路径 -->
+		<mapper resource="mapper/UserMapper.xml"></mapper>
+	</mappers>
+</configuration>

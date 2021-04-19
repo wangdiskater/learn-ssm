@@ -37,4 +37,17 @@ public class UserController {
     public String save(){
         return "添加成功";
     }
+
+
+    @RequestMapping("query2")
+    @ResponseBody
+    public Map<String, Object> query2(Integer id, String name){
+
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("id",id);
+        map.put("name",name);
+
+        return map;
+    }
 }

@@ -13,4 +13,8 @@
     <!-- 配置注解方式开发的处理器 -->
     <bean class="com.learn.controller.UserController"/>
 
+    <!--mybatis factory初始化-->
+    <bean class="com.learn.mymybatis.MybatisUtils" init-method="init"></bean>
+
+
 </beans>

@@ -7,13 +7,13 @@
     <groupId>com.learn</groupId>
     <artifactId>mcv</artifactId>
     <version>1.0</version>
-    <modules>
-        <module>../mybatis</module>
-    </modules>
+<!--    <modules>-->
+<!--        <module>../mybatis</module>-->
+<!--    </modules>-->
     <!--    <modules>-->
 <!--        <module>../myspring</module>-->
 <!--    </modules>-->
-    <packaging>pom</packaging>
+    <packaging>war</packaging>
 
     <dependencies>
         <!-- servlet -->
@@ -48,16 +48,19 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.5</version>
         </dependency>
+
+        <!-- mysql依赖 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.16</version>
+        </dependency>
+
         <dependency>
             <groupId>com.learn</groupId>
             <artifactId>myspring</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.learn</groupId>
-            <artifactId>myspring</artifactId>
-            <version>1.0</version>
         </dependency>
 
         <dependency>

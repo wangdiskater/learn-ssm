@@ -9,10 +9,9 @@
 <!--        <relativePath>../demo1/pom.xml</relativePath>-->
 <!--    </parent>-->
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.learn</groupId>
-    <artifactId>mybatis</artifactId>
     <version>1.0</version>
+    <artifactId>mybatis</artifactId>
 
     <build>
         <plugins>
@@ -41,6 +40,7 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.16</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- DOM4J依赖 -->

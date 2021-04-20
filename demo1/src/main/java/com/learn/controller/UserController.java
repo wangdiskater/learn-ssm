@@ -4,8 +4,15 @@ package com.learn.controller;
 import com.learn.annotation.Controller;
 import com.learn.annotation.RequestMapping;
 import com.learn.annotation.ResponseBody;
+import com.learn.core.factory.SqlSessionFactory;
+import com.learn.core.sqlsessoin.SqlSession;
+import com.learn.factory.DefaultFactory;
+import com.learn.mymybatis.MybatisUtils;
+import com.learn.po.User;
+import com.learn.spring.factory.support.DefaultListableBeanFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,13 +48,17 @@ public class UserController {
 
     @RequestMapping("query2")
     @ResponseBody
-    public Map<String, Object> query2(Integer id, String name){
-
-
+    public List query2(String username, String sex){
         Map<String, Object> map = new HashMap<>();
-        map.put("id",id);
-        map.put("name",name);
+        map.put("username",username);
+        map.put("sex",sex);
 
-        return map;
+        DefaultListableBeanFactory beanFactory = DefaultFactory.beanFactory;
+        MybatisUtils mybatisUtils = (MybatisUtils) beanFactory.getBean("MybatisUtils");
+        SqlSessionFactory sqlSessionFactory = mybatisUtils.getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        List<User> users = sqlSession.selectList("test.queryUserByParams", map);
+
+        return users;
     }
 }

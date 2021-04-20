@@ -64,7 +64,11 @@ public class RequestMappingHandlerAdapter implements HandlerAdapter{
             }else if(returnValue instanceof Map){
                 resp.setContentType("application/json;charset=utf8");
                 resp.getWriter().write(JsonUtils.object2Json(returnValue));
-            }//......
+            } else if (returnValue instanceof List) {
+                resp.setContentType("application/json;charset=utf8");
+                resp.getWriter().write(JsonUtils.object2Json(returnValue));
+            }
+            //......
         }else{
             // 视图处理
         }

@@ -2,6 +2,7 @@ package com.learn.servlet;
 
 
 import com.learn.adapter.HandlerAdapter;
+import com.learn.factory.DefaultFactory;
 import com.learn.mapping.HandlerMapping;
 import com.learn.spring.factory.support.DefaultListableBeanFactory;
 import com.learn.spring.reader.XmlBeanDefinitionReader;
@@ -44,6 +45,9 @@ public class DispatcherServlet extends AbstractServlet{
 
         // 初始化策略集合
         initStrategies();
+
+        // mybatis 使用（弄一个全局变量）
+        DefaultFactory.beanFactory = beanFactory;
     }
 
     /**
